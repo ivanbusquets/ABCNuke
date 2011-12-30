@@ -1,0 +1,338 @@
+#! /Applications/Nuke6.3v1/Nuke6.3v1.app/Contents/MacOS/Nuke6.3v1 -nx
+version 6.3 v1
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="22" w="1280" h="774" screen="0">
+        <splitter orientation="1">
+            <split size="808"/>
+            <splitter orientation="1">
+                <split size="40"/>
+                <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                    <page id="Toolbar.1"/>
+                </dock>
+                <split size="764"/>
+                <splitter orientation="2">
+                    <split size="374"/>
+                    <dock id="" activePageId="Viewer.1">
+                        <page id="Viewer.1"/>
+                    </dock>
+                    <split size="374"/>
+                    <dock id="" activePageId="DAG.1">
+                        <page id="DAG.1"/>
+                        <page id="Curve Editor.1"/>
+                        <page id="DopeSheet.1"/>
+                    </dock>
+                </splitter>
+            </splitter>
+            <split size="468"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+inputs 0
+name /Users/ivan/Dropbox/ABCNuke/examples/ABCReadGeo_example3.nk
+project_directory "\[python \{nuke.script_directory()\}]"
+frame 6
+format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+proxy_type scale
+proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+}
+BackdropNode {
+inputs 0
+name BackdropNode3
+tile_color 0x7171c600
+label "96 samples/sec\ninterpolation ON (linear)"
+note_font_size 42
+xpos 385
+ypos -283
+bdwidth 205
+bdheight 361
+}
+BackdropNode {
+inputs 0
+name BackdropNode4
+tile_color 0x8e8e3800
+label "96 samples/sec\ninterpolation OFF"
+note_font_size 42
+xpos 56
+ypos -291
+bdwidth 205
+bdheight 361
+}
+BackdropNode {
+inputs 0
+name BackdropNode1
+tile_color 0x8e8e3800
+label "24 samples/sec\ninterpolation OFF"
+note_font_size 42
+xpos -787
+ypos -300
+bdwidth 205
+bdheight 361
+}
+BackdropNode {
+inputs 0
+name BackdropNode2
+tile_color 0x7171c600
+label "24 samples/sec\ninterpolation ON (linear)"
+note_font_size 42
+xpos -456
+ypos -296
+bdwidth 205
+bdheight 361
+}
+BackdropNode {
+inputs 0
+name BackdropNode5
+tile_color 0x7171c600
+label "24 samples/sec\ninterpolation ON (linear)\ntiming = retime"
+note_font_size 42
+xpos -223
+ypos 497
+bdwidth 263
+bdheight 423
+}
+Camera2 {
+inputs 0
+translate {0 0 35}
+name Camera4
+xpos 520
+ypos 10
+}
+Constant {
+inputs 0
+channels rgb
+color {0.5 0.5 0.5 1}
+name Constant4
+xpos 410
+ypos -167
+}
+ABCReadGeo {
+file example3_media/animspheres_96samp.abc
+interpolation linear
+last 24
+Obj_list { { 1 3 1 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "polySurfaceShape1" 1 0  } 
+} 
+}
+
+name ABCReadGeo4
+label "96 samples/sec"
+xpos 410
+ypos -44
+}
+push 0
+ScanlineRender {
+inputs 3
+samples 8
+output_motion_vectors_type accurate
+name ScanlineRender4
+xpos 410
+ypos 31
+}
+Camera2 {
+inputs 0
+translate {0 0 35}
+name Camera2
+xpos 195
+ypos 6
+}
+Constant {
+inputs 0
+channels rgb
+color {0.5 0.5 0.5 1}
+name Constant2
+xpos 85
+ypos -174
+}
+ABCReadGeo {
+file example3_media/animspheres_96samp.abc
+last 24
+Obj_list { { 1 3 1 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "polySurfaceShape1" 1 0  } 
+} 
+}
+
+name ABCReadGeo2
+label "96 samples/sec"
+xpos 85
+ypos -51
+}
+push 0
+ScanlineRender {
+inputs 3
+samples 8
+output_motion_vectors_type accurate
+name ScanlineRender2
+xpos 85
+ypos 27
+}
+StickyNote {
+inputs 0
+name StickyNote1
+label "Interpolation test\nUsing an Alembic archive exported\nat 24 samples/sec\nand 96 samples/sec"
+note_font_size 41
+xpos -404
+ypos -560
+}
+Camera2 {
+inputs 0
+translate {0 0 35}
+name Camera3
+xpos -652
+ypos -9
+}
+Constant {
+inputs 0
+channels rgb
+color {0.5 0.5 0.5 1}
+name Constant3
+xpos -777
+ypos -175
+}
+ABCReadGeo {
+file example3_media/animspheres_24samp.abc
+last 24
+Obj_list { { 1 3 1 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "polySurfaceShape1" 1 0  } 
+} 
+}
+
+name ABCReadGeo3
+label "24 samples/sec"
+xpos -777
+ypos -75
+}
+push 0
+ScanlineRender {
+inputs 3
+samples 8
+output_motion_vectors_type accurate
+name ScanlineRender3
+xpos -777
+ypos 12
+}
+Camera2 {
+inputs 0
+translate {0 0 35}
+name Camera5
+xpos -37
+ypos 826
+}
+Constant {
+inputs 0
+channels rgb
+color {0.5 0.5 0.5 1}
+name Constant5
+xpos -162
+ypos 649
+}
+ABCReadGeo {
+file example3_media/animspheres_24samp.abc
+interpolation linear
+timing retime
+last 20
+frame {{frame*2}}
+Obj_list { { 1 3 1 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "polySurfaceShape1" 1 {}  } 
+} 
+}
+
+name ABCReadGeo5
+label "24 samples/sec"
+xpos -162
+ypos 755
+}
+push 0
+ScanlineRender {
+inputs 3
+samples 8
+output_motion_vectors_type accurate
+name ScanlineRender5
+xpos -162
+ypos 847
+}
+Camera2 {
+inputs 0
+translate {0 0 35}
+name Camera1
+xpos -321
+ypos -5
+}
+Constant {
+inputs 0
+channels rgb
+color {0.5 0.5 0.5 1}
+name Constant1
+xpos -446
+ypos -182
+}
+ABCReadGeo {
+file example3_media/animspheres_24samp.abc
+interpolation linear
+last 24
+Obj_list { { 1 3 1 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "polySurfaceShape1" 1 0  } 
+} 
+}
+
+name ABCReadGeo1
+label "24 samples/sec"
+xpos -446
+ypos -76
+}
+push 0
+ScanlineRender {
+inputs 3
+samples 8
+output_motion_vectors_type accurate
+name ScanlineRender1
+xpos -446
+ypos 16
+}
+Viewer {
+inputs 2
+frame 6
+input_number 1
+input_process false
+name Viewer1
+xpos -162
+ypos 220
+}
+StickyNote {
+inputs 0
+name StickyNote2
+label "Retiming test\nspeeding up animation by 2x"
+note_font_size 41
+xpos -366
+ypos 349
+}

@@ -1,0 +1,194 @@
+#! /Applications/Nuke6.3v1/Nuke6.3v1.app/Contents/MacOS/Nuke6.3v1 -nx
+version 6.3 v1
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="22" w="1280" h="774" screen="0">
+        <splitter orientation="1">
+            <split size="808"/>
+            <splitter orientation="1">
+                <split size="40"/>
+                <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                    <page id="Toolbar.1"/>
+                </dock>
+                <split size="764"/>
+                <splitter orientation="2">
+                    <split size="374"/>
+                    <dock id="" activePageId="Viewer.1">
+                        <page id="Viewer.1"/>
+                    </dock>
+                    <split size="374"/>
+                    <dock id="" activePageId="DAG.1">
+                        <page id="DAG.1"/>
+                        <page id="Curve Editor.1"/>
+                        <page id="DopeSheet.1"/>
+                    </dock>
+                </splitter>
+            </splitter>
+            <split size="468"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+inputs 0
+name /Users/ivan/Dropbox/ABCNuke/examples/ABCReadGeo_example2.nk
+project_directory "\[python \{nuke.script_directory()\}]"
+frame 46
+format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+proxy_type scale
+proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+}
+Read {
+inputs 0
+file example2_media/windshield.png
+format "1024 1024 0 0 1024 1024 1 square_1K"
+origset true
+name Read2
+xpos 52
+ypos -91
+}
+ABCReadGeo {
+file example2_media/heli2.abc
+first 0
+last 0
+Obj_list { { 1 3 4 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "Rotor_meshShape" 0 {}  } 
+ { "Fuse_mesh" 0 {}  } 
+ { "Compartment_mesh" 0 {}  } 
+ { "Window_mesh" 1 {}  } 
+} 
+}
+
+name ABCReadGeo2
+label Windows
+xpos 52
+ypos 110
+}
+Read {
+inputs 0
+file example2_media/rotor2.png
+format "1024 1024 0 0 1024 1024 1 square_1K"
+origset true
+name Read4
+xpos -58
+ypos -93
+}
+Grade {
+multiply 0.38
+name Grade1
+xpos -58
+ypos 26
+}
+ABCReadGeo {
+file example2_media/heli2.abc
+first 0
+last 0
+Obj_list { { 1 3 4 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "Rotor_meshShape" 1 {}  } 
+ { "Fuse_mesh" 0 {}  } 
+ { "Compartment_mesh" 0 {}  } 
+ { "Window_mesh" 0 {}  } 
+} 
+}
+
+name ABCReadGeo5
+label Rotor
+xpos -58
+ypos 110
+}
+Read {
+inputs 0
+file example2_media/compartment.png
+format "1024 1024 0 0 1024 1024 1 square_1K"
+origset true
+name Read3
+xpos -168
+ypos -91
+}
+ABCReadGeo {
+file example2_media/heli2.abc
+first 0
+last 0
+Obj_list { { 1 3 4 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "Rotor_meshShape" 0 {}  } 
+ { "Fuse_mesh" 0 {}  } 
+ { "Compartment_mesh" 1 {}  } 
+ { "Window_mesh" 0 {}  } 
+} 
+}
+
+name ABCReadGeo3
+label Compartment
+xpos -168
+ypos 110
+}
+Read {
+inputs 0
+file example2_media/ka26_paint4.png
+format "2048 2048 0 0 2048 2048 1 square_2K"
+origset true
+name Read1
+xpos -278
+ypos -92
+}
+ABCReadGeo {
+file example2_media/heli2.abc
+first 0
+last 0
+Obj_list { { 1 3 4 } 
+{ { 3 0 216 name Obj Name } 
+{ 4 1 45 active Active } 
+{ 4 1 45 bbox BBox } 
+} 
+{ 
+ { "Rotor_meshShape" 0 {}  } 
+ { "Fuse_mesh" 1 {}  } 
+ { "Compartment_mesh" 0 {}  } 
+ { "Window_mesh" 0 {}  } 
+} 
+}
+
+name ABCReadGeo1
+label Fuse
+xpos -278
+ypos 110
+}
+MergeGeo {
+inputs 4
+name MergeGeo1
+xpos -121
+ypos 214
+}
+StickyNote {
+inputs 0
+name StickyNote1
+label "Reading single objects\nfrom the same ABC archive"
+note_font_size 31
+xpos -246
+ypos 276
+}
+Viewer {
+inputs 0
+input_process false
+name Viewer1
+xpos 377
+ypos 306
+}
