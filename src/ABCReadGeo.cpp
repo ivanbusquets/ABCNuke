@@ -36,6 +36,7 @@ static const char* const timing_types[] = { "original timing", "retime", 0};
 
 
 static const char* nodeClass = "ABCReadGeo";
+static const char* const HELP = "Alembic geometry reader";
 
 
 class ABCReadGeo : public SourceGeo
@@ -100,7 +101,7 @@ void ABCReadGeo::_validate(bool for_real)
 	}
 	//retime
 	else {
-		m_sampleFrame = clamp(knob("frame")->get_value(), m_first, m_last) ;
+		m_sampleFrame = clamp(knob("frame")->get_value_at(outputContext().frame()), m_first, m_last) ;
 	}
 
 	SourceGeo::_validate(for_real);
@@ -166,8 +167,7 @@ void ABCReadGeo::knobs(Knob_Callback f)
 	Tooltip(f, "List of objects in the Alembic archive.\n"
 			"For each object, the following toggles are available:\n"
 			"<b>Active:</b> Enable/disable that particular object. Disabled objects will not be read from the Alembic archive.\n"
-			"<b>Bbox:</b> Choose whether to read the full geometry or just a bbox of each object.\n"
-			"<b>Attributes:</b>");
+			"<b>Bbox:</b> Choose whether to read the full geometry or just a bbox of each object.\n");
 
 
 	// Disable/enable "frame" knob based on choice in "timing" knob
