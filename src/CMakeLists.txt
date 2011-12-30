@@ -16,6 +16,7 @@ link_directories    ( ${NUKE_LIBRARY_DIR}
 				     )
 
 add_library 		( ABCReadGeo SHARED
+					  ABCNuke_ArchiveHelper.cpp
 					  ABCNuke_Interpolation.cpp
 					  ABCNuke_MatrixHelper.cpp
 					  ABCNuke_GeoHelper.cpp
