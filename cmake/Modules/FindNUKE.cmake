@@ -34,7 +34,7 @@
 # The module defines the following variables:
 #	NUKE_INCLUDE_DIR - path to Nuke headers
 #	NUKE_LIBRARY_DIR - path to Nuke libs
-#   NUKE_FOUND 		 - true if the Nuke install directory was found
+#       NUKE_FOUND       - true if the Nuke install directory was found
 #
 # Example usage:
 #   find_package(NUKE)
@@ -55,24 +55,24 @@
 message("-- Searching Nuke libraries.......")
 
 # Find Nuke lib dir
-find_library( DDIMAGE_LIBRARY DDImage
+find_library ( DDIMAGE_LIBRARY DDImage
               ${NUKE_DIR}
-  			  $ENV{NUKE_NDK_DIR}
-  			)
+  	      $ENV{NUKE_NDK_DIR}
+  	     )
 
-get_filename_component( NUKE_LIBRARY_DIR ${DDIMAGE_LIBRARY} PATH )
+get_filename_component ( NUKE_LIBRARY_DIR ${DDIMAGE_LIBRARY} PATH )
 
 # Find Nuke include dir
-find_path( NUKE_INCLUDE_DIR DDImage/Op.h
-  		   ${NUKE_LIBRARY_DIR}/include
-  		  )
+find_path ( NUKE_INCLUDE_DIR DDImage/Op.h
+            ${NUKE_LIBRARY_DIR}/include
+          )
 
 include( FindPackageHandleStandardArgs )
 find_package_handle_standard_args( "Nuke" DEFAULT_MSG
-								  DDIMAGE_LIBRARY
+				  DDIMAGE_LIBRARY
                                   NUKE_LIBRARY_DIR
-								  NUKE_INCLUDE_DIR								  
-								  )
+				  NUKE_INCLUDE_DIR								  
+				  )
 
 # Get API version numbers
 file ( STRINGS ${NUKE_INCLUDE_DIR}/DDImage/ddImageVersionNumbers.h NUKE_VERSION_NUMBERS )
