@@ -13,7 +13,7 @@ find_package(NUKE REQUIRED)
 ####################################
 # ---------- Find Boost ---------- #  
 ####################################
-
+set(Boost_ADDITIONAL_VERSIONS "1.46" "1.45" "1.44")
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 find_package(Boost REQUIRED)
@@ -36,10 +36,10 @@ if(NOT HDF5_HL_LIBRARIES)
 	
 	# Is there a better way to find a static lib?
 	find_library  (HDF5_HL_LIBRARIES libhdf5_hl.a
-		    	   #HINTS ${HDF5_LIBRARY_DIRS}
-		    		/usr/lib
-		    		/usr/local/lib
-					/opt/local/lib
+		    	   HINTS ${HDF5_LIBRARY_DIRS}
+		    	   /usr/lib
+		    	   /usr/local/lib
+			   /opt/local/lib
 		    		)
 endif()
 

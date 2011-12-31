@@ -65,7 +65,7 @@ Matrix4 recomposeMatrix(
 	Matrix4 s_mtx, r_mtx, t_mtx;
 
 	s_mtx.scaling(scale);
-	r_mtx = rotation.matrix2();
+	r_mtx = rotation.matrix();
 	t_mtx.translation(translation);
 
 	return s_mtx * r_mtx * t_mtx;

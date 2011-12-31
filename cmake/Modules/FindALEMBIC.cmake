@@ -77,7 +77,7 @@ find_library(ALEMBIC_UTIL_LIBRARY
 	PATHS ${LIBRARY_PATHS})
 
 
-set( ALEMBIC_LIBRARIES
+set ( ALEMBIC_LIBRARIES
 	${ALEMBIC_ABC_LIBRARY}
 	${ALEMBIC_ABCGEOM_LIBRARY}
 	${ALEMBIC_ABCCOREHDF5_LIBRARY}
@@ -88,17 +88,17 @@ set( ALEMBIC_LIBRARIES
 get_filename_component( ALEMBIC_LIBRARY_DIR ${ALEMBIC_ABC_LIBRARY} PATH )
 
 # Find Alembic include dir
-find_path( ALEMBIC_INCLUDE_DIR Alembic/Abc/All.h
-  		   ${ALEMBIC_DIR}/include
-  		  )
+find_path ( ALEMBIC_INCLUDE_DIR Alembic/Abc/All.h
+           ${ALEMBIC_DIR}/include
+          )
 
 include( FindPackageHandleStandardArgs )
 
 find_package_handle_standard_args( "Alembic" DEFAULT_MSG
-								  ALEMBIC_LIBRARIES
+				  ALEMBIC_LIBRARIES
                                   ALEMBIC_LIBRARY_DIR
-								  ALEMBIC_INCLUDE_DIR								  
-								  )
+				  ALEMBIC_INCLUDE_DIR								  
+				  )
 if(NOT ALEMBIC_FOUND)
     message(FATAL_ERROR "Try using the -D ALEMBIC_DIR flag =... ")
 endif()								
