@@ -48,7 +48,7 @@ endif()
 # --------- Find Alembic --------- #
 ####################################
 
-find_package(ALEMBIC)
+find_package(ALEMBIC REQUIRED)
 
 ####################################
 # --------- Find OpenEXR --------- #
