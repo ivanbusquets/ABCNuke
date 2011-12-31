@@ -43,7 +43,6 @@ if(NOT HDF5_HL_LIBRARIES)
 		    		)
 endif()
 
-message(${HDF5_HL_LIBRARIES})
 					    
 ####################################
 # --------- Find Alembic --------- #
