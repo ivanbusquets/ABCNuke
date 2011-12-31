@@ -45,4 +45,4 @@ target_link_libraries ( ABCReadGeo
 
 
 install ( TARGETS ABCReadGeo
-          DESTINATION ${CMAKE_SOURCE_DIR}/plugins/${NUKE_MAJOR_VERSION}.${NUKE_MINOR_VERSION})
+          DESTINATION ${CMAKE_BINARY_DIR}/plugins/${NUKE_MAJOR_VERSION}.${NUKE_MINOR_VERSION})
