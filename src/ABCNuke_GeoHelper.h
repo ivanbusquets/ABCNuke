@@ -32,6 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "DDImage/Attribute.h"
 #include "DDImage/GeoInfo.h"
+#include "DDImage/GeometryList.h"
 #include "DDImage/Primitive.h"
 #include "DDImage/Polygon.h"
 #include "DDImage/Point.h"
