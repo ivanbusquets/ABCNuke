@@ -40,7 +40,7 @@ target_link_libraries ( ABCReadGeo
                         pthread
 			${ALEMBIC_LIBRARIES}
 			${HDF5_HL_LIBRARIES}
-			${HDF5_LIBRARIES
+			${HDF5_LIBRARIES}
                       )
 
 

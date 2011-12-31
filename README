@@ -1,0 +1,98 @@
+-------------------------------------------------------------------------------
+- ABCNuke plugins
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+DESCRIPTION:
+-------------------------------------------------------------------------------
+
+A set of plugins to read Alembic data in Nuke.
+
+-------------------------------------------------------------------------------
+REQUIREMENTS:
+-------------------------------------------------------------------------------
+
+- ABCNuke needs the following software / libraries
+
+Nuke (6.2, 6.3)      - www.thefoundry.co.uk/products/nuke/
+Alembic (1.0.x)      - www.code.google.com/p/alembic/
+CMake (2.8.0)        - www.cmake.org
+OpenEXR (1.6.1)      - www.openexr.com
+
+Required by Alembic:
+Boost (1.44)         - www.boost.org
+HDF5 (1.8.7)         - www.hdfgroup.org/HDF5
+
+
+-------------------------------------------------------------------------------
+INSTALLATION:
+-------------------------------------------------------------------------------
+
+1) Download ABCNuke (.zip or .tar.gz) and expand the contents into your directory of choice
+
+2) Create a build directory.
+
+$ cd ~/ ; tar xzf ALEMBIC_SOURCE_-xxxxxxxx.tgz
+
+This will create a directory, ~/ALEMBIC_SOURCE, that contains the Alembic
+source code (if you're reading this, you've probably already done this).
+
+As alluded to in Step 0, ~/ALEMBIC_SOURCE/doc/ will contain instructional
+files for building Boost and HDF5.  Mostly, those packages' libraries just
+need a little encouragement to build static archives and with -fPIC.
+
+2) Create a build root directory.  The Alembic build bootstrap script assumes
+an out-of-source build.  For purposes of illustration, this document assumes
+that your build root is located parallel to your source root, though that is
+not required.
+
+$ mkdir ~/ALEMBIC_BUILD
+
+3) Change to the build directory.  This is so you can use `pwd` as part
+of the right-hand-side of a setenv command.
+
+$ cd ~/ALEMBIC_BUILD
+
+4) Run the Alembic bootstrap script.  Again, assuming your CWD is still
+~/ALEMBIC_BUILD, the following should work:
+
+$ python ../ALEMBIC_SOURCE/build/bootstrap/alembic_bootstrap.py .
+
+You can give it several options and flags; '-h' for a list of them.  If you
+don't specify a complete set of options when you run it, it will prompt you
+interactively for the information it needs to initialize the build system.
+
+It's worth pointing out that running the bootstrap script is optional; there
+is a fairly comprehensive set of CMake files there that might just work for
+you "out of the box".  On the other hand, we do strongly recommend running
+the bootstrapper; it will make things so much easier for you.
+
+4a) Once the system is bootstrapped, there will be a file called "CMakeCache.txt"
+in your build root.  You can examine and manipulate this file with the cmake
+commands "ccmake" (curses-based console program), or "cmake-gui" (Qt-based
+gui program).  This file is the control file for CMake itself; the main thing
+the bootstrapper does is create it and populate it appropriately (the bootstrap
+script will also use it to get default values for the things it asks you for).
+
+You can also just edit it directly, if you know what you're doing.  If you
+change it, just be sure to run "cmake ." in the same directory as it so that
+it regenerates the Makefiles.
+
+5) Run the make command.  Kind of a no-brainer, really.  You can safely run make
+with the '-j' flag, for doing multi-process builds.  In general, you can
+profitably run as many "make" processes as you have CPUs, so for a dual-proc
+machine,
+
+$ make -j2
+
+will build it as quickly as possible.  Once the Alembic project has been built,
+you can optionall run:
+
+$ make test
+
+or,
+
+$ make install
+
+each of which does what you'd expect.  Running
+
+$ make help
