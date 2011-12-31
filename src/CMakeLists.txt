@@ -1,9 +1,3 @@
-set(LINK_FLAGS "-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64")
-
-if(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup")
-endif()
-
 include_directories ( ${NUKE_INCLUDE_DIR}
 					  ${Boost_INCLUDE_DIRS}
 					  ${ALEMBIC_INCLUDE_DIR}	  
