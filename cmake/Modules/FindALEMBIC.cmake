@@ -34,7 +34,7 @@
 # The module defines the following variables:
 #	ALEMBIC_INCLUDE_DIR - path to Alembic headers
 #	ALEMBIC_LIBRARY_DIR - path to Alembic static libs
-#   ALEMBIC_FOUND 	    - true if the Alembic was found
+#       ALEMBIC_FOUND 	    - true if the Alembic was found
 #
 # Example usage:
 #   find_package(ALEMBIC)
@@ -100,6 +100,6 @@ find_package_handle_standard_args( "Alembic" DEFAULT_MSG
 				  ALEMBIC_INCLUDE_DIR								  
 				  )
 if(NOT ALEMBIC_FOUND)
-    message(FATAL_ERROR "Try using the -D ALEMBIC_DIR flag =... ")
+    message(FATAL_ERROR "Try using -D ALEMBIC_DIR=/path/to/alembic")
 endif()								
 	
