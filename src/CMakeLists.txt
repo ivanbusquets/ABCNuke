@@ -2,6 +2,7 @@ include_directories ( ${NUKE_INCLUDE_DIR}
 					  ${Boost_INCLUDE_DIRS}
 					  ${ALEMBIC_INCLUDE_DIR}	  
 					  ${OPENEXR_INCLUDE_PATHS}
+					  ${ALEMBIC_ILMBASE_INCLUDE_DIRECTORY}
 					 )
 
 link_directories    ( ${NUKE_LIBRARY_DIR}
