@@ -37,6 +37,7 @@ CMake (2.8.0)        - www.cmake.org
 OpenEXR (1.6.1)      - www.openexr.com
 
 Required by Alembic:
+ilmbase (1.0.1)      - www.openexr.com
 Boost (1.44)         - www.boost.org
 HDF5 (1.8.7)         - www.hdfgroup.org/HDF5
 
