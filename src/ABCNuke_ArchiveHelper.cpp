@@ -33,7 +33,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 using namespace Alembic::AbcGeom;
 
-
 void getABCGeos(Alembic::Abc::IObject & iObj,
 		std::vector<Alembic::AbcGeom::IObject> & _objs)
 {
@@ -146,12 +145,26 @@ bool getNamedCamera( IObject iObjTop, const std::string &iName, ICamera &iCam )
 }
 //-*****************************************************************************
 
-void getXformTimeSpan(IXform iXf, chrono_t& first, chrono_t& last) {
+void getXformTimeSpan(IXform iXf, chrono_t& first, chrono_t& last, bool inherits) {
 
 	IXformSchema xf = iXf.getSchema();
 	TimeSamplingPtr ts = xf.getTimeSampling();
 	first = std::min(first, ts->getSampleTime(0) );
 	last = std::max(last, ts->getSampleTime(xf.getNumSamples()-1) );
+	if (inherits && xf.getInheritsXforms()) {
+		IObject parent = iXf.getParent();
+
+		// Once the Archive's Top Object is reached, IObject::getParent() will
+		// return an invalid IObject, and that will evaluate to False.
+		while ( parent )
+		{
+			if ( Alembic::AbcGeom::IXform::matches(parent.getHeader()) ) {
+				IXform x( parent, kWrapExisting );
+				getXformTimeSpan(x, first, last, inherits);
+			}
+		}
+
+	}
 }
 
 //-*****************************************************************************
@@ -186,8 +199,41 @@ void getSubDTimeSpan(ISubD iSub, chrono_t& first, chrono_t& last) {
 
 //-*****************************************************************************
 
+void getObjectTimeSpan(IObject obj, chrono_t& first, chrono_t& last, bool doChildren)
+{
+	if ( Alembic::AbcGeom::IPolyMesh::matches(obj.getHeader()) ) {
+		IPolyMesh iPoly(obj, Alembic::Abc::kWrapExisting);
+		getPolyMeshTimeSpan(iPoly, first, last);
+	}
+
+	else if ( Alembic::AbcGeom::ISubD::matches(obj.getHeader()) ) {
+		ISubD iSub(obj, Alembic::Abc::kWrapExisting);
+		getSubDTimeSpan(iSub, first, last);
+	}
+
+	else if ( Alembic::AbcGeom::IXform::matches(obj.getHeader()) ) {
+		IXform iXf(obj, Alembic::Abc::kWrapExisting);
+		getXformTimeSpan(iXf, first, last, false);
+	}
+
+	else if ( Alembic::AbcGeom::ICamera::matches(obj.getHeader()) ) {
+		ICamera iCam(obj, Alembic::Abc::kWrapExisting);
+		getCameraTimeSpan(iCam, first, last);
+	}
+
+	if (doChildren) {
+		// do this object's children too
+		for (unsigned i=0; i < obj.getNumChildren(); ++i)
+		{
+			IObject child( obj.getChild( i ));
+			getObjectTimeSpan(child, first, last, doChildren);
+		}
+	}
+}
+//-*****************************************************************************
 void getABCTimeSpan(IArchive archive, chrono_t& first, chrono_t& last)
 {
+	// TO DO: Is the childBounds property reliable to get the full archive's span?
 
 	if (!archive.valid())
 		return;
@@ -198,31 +244,8 @@ void getABCTimeSpan(IArchive archive, chrono_t& first, chrono_t& last)
 
 	for (unsigned i=0; i<numChildren; ++i)
 	{
-		IObject child( archiveTop.getChild( i ));
-
-		if ( Alembic::AbcGeom::IPolyMesh::matches(child.getHeader()) ) {
-
-			IPolyMesh iPoly(child, Alembic::Abc::kWrapExisting);
-			getPolyMeshTimeSpan(iPoly, first, last);
-		}
-
-		else if ( Alembic::AbcGeom::ISubD::matches(child.getHeader()) ) {
-
-			ISubD iSub(child, Alembic::Abc::kWrapExisting);
-			getSubDTimeSpan(iSub, first, last);
-		}
-
-		else if ( Alembic::AbcGeom::IXform::matches(child.getHeader()) ) {
-
-			IXform iXf(child, Alembic::Abc::kWrapExisting);
-			getXformTimeSpan(iXf, first, last);
-		}
-
-		else if ( Alembic::AbcGeom::ICamera::matches(child.getHeader()) ) {
-
-			ICamera iCam(child, Alembic::Abc::kWrapExisting);
-			getCameraTimeSpan(iCam, first, last);
-		}
+		IObject obj( archiveTop.getChild( i ));
+		getObjectTimeSpan(obj, first, last, true);
 
 	}
 

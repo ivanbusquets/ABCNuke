@@ -54,10 +54,11 @@ bool getNamedXform( IObject iObjTop, const std::string &iName, IXform &iXf );
 bool getNamedCamera( IObject iObjTop, const std::string &iName, ICamera &iCam );
 
 // Get the time span of a single IObject, or the whole ABC archive
-void getXformTimeSpan(IXform iXf, chrono_t& first, chrono_t& last);
+void getXformTimeSpan(IXform iXf, chrono_t& first, chrono_t& last, bool inherits = false);
 void getCameraTimeSpan(ICamera iCam, chrono_t& first, chrono_t& last);
 void getPolyMeshTimeSpan(IPolyMesh iPoly, chrono_t& first, chrono_t& last);
 void getSubDTimeSpan(ISubD iSub, chrono_t& first, chrono_t& last);
+void getObjectTimeSpan(IObject obj, chrono_t& first, chrono_t& last, bool doChildren = false);
 void getABCTimeSpan(Alembic::Abc::IArchive archive, chrono_t& first, chrono_t& last);
 
 #endif
