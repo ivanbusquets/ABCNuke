@@ -6,11 +6,14 @@
  *
  */
 
-
 // DDImage headers
 #include "DDImage/SourceGeo.h"
 #include "DDImage/Knobs.h"
+#include "DDImage/GeoInfo.h"
+
 #include "DDImage/TableKnobI.h"
+#include "DDImage/Scene.h"
+
 
 // Alembic headers
 #include "Alembic/AbcCoreHDF5/All.h"
@@ -54,6 +57,7 @@ class ABCReadGeo : public SourceGeo
 	float						m_sampleFrame;
 	std::vector<bool>			active_objs;
 	std::vector<bool>			bbox_objs;
+	bool 						m_rebuild_all;
 
 
 public:
@@ -67,6 +71,8 @@ public:
 		m_first = m_last = 1;
 		m_frame = 1;
 		m_sampleFrame = 1;
+
+		m_rebuild_all = true;
 
 	}
 
@@ -215,6 +221,11 @@ int ABCReadGeo::knob_changed(DD::Image::Knob* k)
 		return 1;
 	}
 
+	if(k->name() == "Obj_list") {
+		m_rebuild_all = true;
+		return 1;
+	}
+
 	if(k->name() == "activate_selection") {
 		p_tableKnobI->suspendKnobChangedEvents();
 		std::vector<int> selectedRows = p_tableKnobI->getSelectedRows();
@@ -266,6 +277,7 @@ int ABCReadGeo::knob_changed(DD::Image::Knob* k)
 	if(k->name() == "file") {
 		updateTableKnob();
 		updateTimingKnobs();
+		m_rebuild_all = true;
 		return 1;
 	}
 
@@ -368,8 +380,11 @@ void ABCReadGeo::append(Hash& hash)
 /*virtual*/
 void ABCReadGeo::get_geometry_hash()
 {
+
 	SourceGeo::get_geometry_hash();
 
+	// Group Object
+	//geo_hash[Group_Object].append(m_filename);
 	// Group Points
 	geo_hash[Group_Points].append(m_filename);
 	geo_hash[Group_Points].append(m_sampleFrame);
@@ -377,6 +392,7 @@ void ABCReadGeo::get_geometry_hash()
 
 	// Group Primitives
 	geo_hash[Group_Primitives].append(m_filename);
+    geo_hash[Group_Primitives].append(m_sampleFrame);
 
 	// Group Attributes
 	geo_hash[Group_Attributes].append(m_filename);
@@ -408,6 +424,9 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 		return;
 	}
 
+
+
+
 	IArchive archive( Alembic::AbcCoreHDF5::ReadArchive(),
 			filename(),//archiveName,
 			Abc::ErrorHandler::kQuietNoopPolicy );
@@ -421,10 +440,12 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 	IObject archiveTop = archive.getTop();
 
 	std::vector<Alembic::AbcGeom::IObject>  _objs;
+
 	getABCGeos(archiveTop, _objs);
 
 	// current Time to sample from
 	chrono_t curTime = m_sampleFrame  / _FPS;
+
 
 	if ( rebuild(Mask_Primitives)) {
 		out.delete_objects();
@@ -432,7 +453,6 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 
 	int obj = 0;
 	for( std::vector<Alembic::AbcGeom::IObject>::const_iterator iObj( _objs.begin() ); iObj != _objs.end(); ++iObj ) {
-
 
 		// Leave an empty obj if knob is unchecked
 		if (!active_objs[obj] ) {
@@ -448,14 +468,14 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 		if ( rebuild(Mask_Primitives)) {
 
 			out.add_object(obj);
+				if (bbox_objs[obj]) { //(bbox_mode) {
+					buildBboxPrimitives(out, obj);
+				}
+				else {
+					buildABCPrimitives(out, obj, *iObj, curTime);
+				}
+			}
 
-			if (bbox_objs[obj]) { //(bbox_mode) {
-				buildBboxPrimitives(out, obj);
-			}
-			else {
-				buildABCPrimitives(out, obj, *iObj, curTime);
-			}
-		}
 
 
 		if ( rebuild(Mask_Points)) {
@@ -480,7 +500,6 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 			else{
 				writePoints(*iObj, points, curTime, interpolate !=0);
 			}
-
 		}
 
 
@@ -508,7 +527,9 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 		obj++;
 	}
 
+	m_rebuild_all = false;
 	out.synchronize_objects();
+
 
 }
 

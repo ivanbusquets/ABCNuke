@@ -212,7 +212,6 @@ void fillPrimitiveIndices(const Alembic::AbcGeom::IObject iObj,
 		TimeSamplingPtr ts = mesh.getTimeSampling();
 		IPolyMeshSchema::Sample mesh_samp;
 		const ISampleSelector iss(curTime);
-
 		mesh.get( mesh_samp, iss );
 		_fc = mesh_samp.getFaceCounts();
 		_fi = mesh_samp.getFaceIndices();
@@ -422,6 +421,38 @@ Box3d getBounds( IObject iObj, chrono_t curTime = 0 )
 	return bnds;
 }
 
+//-*****************************************************************************
+
+bool isTopologyChanging(IObject iObj)
+{
+	if (Alembic::AbcGeom::IPolyMesh::matches(iObj.getHeader())) {
+		IPolyMesh iPoly(iObj, Alembic::Abc::kWrapExisting);
+		IPolyMeshSchema mesh = iPoly.getSchema();
+		return (mesh.getTopologyVariance() == kHeterogenousTopology);
+	}
+
+	else if (Alembic::AbcGeom::ISubD::matches(iObj.getHeader())) {
+		ISubD iSub(iObj, Alembic::Abc::kWrapExisting);
+		ISubDSchema mesh = iSub.getSchema();
+		return (mesh.getTopologyVariance() == kHeterogenousTopology);
+	}
+
+	return false;
+}
+
+//-*****************************************************************************
+
+bool isTopologyChanging(std::vector<Alembic::AbcGeom::IObject> _objs)
+{
+
+	for( std::vector<Alembic::AbcGeom::IObject>::const_iterator iObj( _objs.begin() ); iObj != _objs.end(); ++iObj ) {
+		if (isTopologyChanging(*iObj)) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 //-*****************************************************************************
 

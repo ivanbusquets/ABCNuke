@@ -74,6 +74,10 @@ void setUVs(GeoInfo& obj, Alembic::AbcGeom::IV2fGeomParam & iUVs, Attribute* UV,
 
 void setNormals(GeoInfo& obj, Alembic::AbcGeom::IN3fGeomParam & Ns, Attribute* N, chrono_t curTime);
 
+bool isTopologyChanging(IObject iObj);
+
+bool isTopologyChanging(std::vector<Alembic::AbcGeom::IObject> _objs);
+
 Box3d getBounds( IObject iObj, chrono_t curTime );
 
 void buildBboxPrimitives(GeometryList& out, unsigned obj);
