@@ -45,19 +45,19 @@ static const char* const HELP = "Alembic geometry reader";
 class ABCReadGeo : public SourceGeo
 {
 	const char* 				m_filename;
-	unsigned 					m_version;
-	int 						interpolate;
-	IArchive 					archive;
-	Knob* 						p_tableKnob;
+	unsigned 				m_version;
+	int 					interpolate;
+	IArchive 				archive;
+	Knob* 					p_tableKnob;
 	Table_KnobI* 				p_tableKnobI;
-	int							timing;
-	int							m_first;
-	int							m_last;
-	float						m_frame;
-	float						m_sampleFrame;
+	int					timing;
+	int					m_first;
+	int					m_last;
+	float					m_frame;
+	float					m_sampleFrame;
 	std::vector<bool>			active_objs;
 	std::vector<bool>			bbox_objs;
-	bool 						m_rebuild_all;
+	bool 					m_rebuild_all;
 
 
 public:
@@ -87,7 +87,7 @@ public:
 
 
 protected:
-	const char * 	filename () const {return m_filename;}
+	const char * filename () const {return m_filename;}
 	virtual void create_geometry(Scene& scene, GeometryList& out);
 	virtual void append(Hash& hash);
 	virtual void get_geometry_hash();
@@ -96,7 +96,7 @@ protected:
 };
 
 // *****************************************************************************
-// 	VALIDATE : clamp outputContext and call _validate on base class
+// VALIDATE : clamp outputContext and call _validate on base class
 // *****************************************************************************
 
 void ABCReadGeo::_validate(bool for_real)
@@ -116,7 +116,7 @@ void ABCReadGeo::_validate(bool for_real)
 
 
 // *****************************************************************************
-// 	KNOBS : Implement the file, timing, and table knobs
+// KNOBS : Implement the file, timing, and table knobs
 // *****************************************************************************
 
 void ABCReadGeo::knobs(Knob_Callback f)
@@ -208,7 +208,7 @@ void ABCReadGeo::knobs(Knob_Callback f)
 }
 
 // *****************************************************************************
-// 	KNOB_CHANGED : Callbacks for file and table knobs
+// KNOB_CHANGED : Callbacks for file and table knobs
 // *****************************************************************************
 
 int ABCReadGeo::knob_changed(DD::Image::Knob* k)
@@ -286,16 +286,17 @@ int ABCReadGeo::knob_changed(DD::Image::Knob* k)
 
 
 // ***************************************************************************************
-// 	UPDATETABLEKNOB : Fill in the table knob with all geo objects from the ABC archive
+// UPDATETABLEKNOB : Fill in the table knob with all geo objects from the ABC archive
 // ***************************************************************************************
 
 void ABCReadGeo::updateTableKnob()
 {
-
+	p_tableKnobI->suspendKnobChangedEvents();
 	p_tableKnobI->deleteAllItems();
 	p_tableKnobI->reset();
 
 	if (filename()[0] == '\0') {
+		p_tableKnobI->resumeKnobChangedEvents(true);
 		return;
 	}
 
@@ -304,12 +305,15 @@ void ABCReadGeo::updateTableKnob()
 			Abc::ErrorHandler::kQuietNoopPolicy );
 
 	if (!archive.valid()) {
+		p_tableKnobI->resumeKnobChangedEvents(true);
 		return;
 	}
 
 	IObject archiveTop = archive.getTop();
-	std::vector<Alembic::AbcGeom::IObject>  _objs;
+	std::vector<Alembic::AbcGeom::IObject> _objs;
 	getABCGeos(archiveTop, _objs);
+
+
 
 	int obj = 0;
 	for( std::vector<Alembic::AbcGeom::IObject>::const_iterator iObj( _objs.begin() ); iObj != _objs.end(); ++iObj ) {
@@ -318,10 +322,11 @@ void ABCReadGeo::updateTableKnob()
 		p_tableKnobI->setCellBool(obj,1,true);
 		obj++;
 	}
+	p_tableKnobI->resumeKnobChangedEvents(true);
 }
 
 // *****************************************************************************
-// 	UPDATETIMINGKNOBS : Fill in the frame range knobs
+// UPDATETIMINGKNOBS : Fill in the frame range knobs
 // *****************************************************************************
 
 void ABCReadGeo::updateTimingKnobs()
@@ -344,8 +349,8 @@ void ABCReadGeo::updateTimingKnobs()
 
 	getABCTimeSpan(archive, firstSample, lastSample);
 
-	knob("first")->set_value(int(firstSample *  _FPS + 0.5f));
-	knob("last")->set_value(int(lastSample *  _FPS + 0.5f));
+	knob("first")->set_value(int(firstSample * _FPS + 0.5f));
+	knob("last")->set_value(int(lastSample * _FPS + 0.5f));
 
 }
 
@@ -353,7 +358,7 @@ void ABCReadGeo::updateTimingKnobs()
 /*----------------------------------------------------------------------------------------------------*/
 
 // *****************************************************************************
-// 	APPEND : Build up the Op's hash
+// APPEND : Build up the Op's hash
 // *****************************************************************************
 /* virtual */
 void ABCReadGeo::append(Hash& hash)
@@ -375,7 +380,7 @@ void ABCReadGeo::append(Hash& hash)
 }
 
 // *****************************************************************************
-// 	GET_GEOMETRY_HASH : Build up the geo hashes
+// GET_GEOMETRY_HASH : Build up the geo hashes
 // *****************************************************************************
 /*virtual*/
 void ABCReadGeo::get_geometry_hash()
@@ -392,7 +397,7 @@ void ABCReadGeo::get_geometry_hash()
 
 	// Group Primitives
 	geo_hash[Group_Primitives].append(m_filename);
-    geo_hash[Group_Primitives].append(m_sampleFrame);
+	geo_hash[Group_Primitives].append(m_sampleFrame);
 
 	// Group Attributes
 	geo_hash[Group_Attributes].append(m_filename);
@@ -413,7 +418,7 @@ void ABCReadGeo::get_geometry_hash()
 /*---------------------------------------------------------------------------------------------------*/
 
 // *****************************************************************************
-// 	CREATE_GEOMETRY : The meat. Query the ABC archive for the needed bits
+// CREATE_GEOMETRY : The meat. Query the ABC archive for the needed bits
 // *****************************************************************************
 /*virtual*/
 void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
@@ -439,12 +444,12 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 
 	IObject archiveTop = archive.getTop();
 
-	std::vector<Alembic::AbcGeom::IObject>  _objs;
+	std::vector<Alembic::AbcGeom::IObject> _objs;
 
 	getABCGeos(archiveTop, _objs);
 
 	// current Time to sample from
-	chrono_t curTime = m_sampleFrame  / _FPS;
+	chrono_t curTime = m_sampleFrame / _FPS;
 
 
 	if ( rebuild(Mask_Primitives)) {
@@ -468,13 +473,13 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 		if ( rebuild(Mask_Primitives)) {
 
 			out.add_object(obj);
-				if (bbox_objs[obj]) { //(bbox_mode) {
-					buildBboxPrimitives(out, obj);
-				}
-				else {
-					buildABCPrimitives(out, obj, *iObj, curTime);
-				}
+			if (bbox_objs[obj]) { //(bbox_mode) {
+				buildBboxPrimitives(out, obj);
 			}
+			else {
+				buildABCPrimitives(out, obj, *iObj, curTime);
+			}
+		}
 
 
 
@@ -536,5 +541,3 @@ void ABCReadGeo::create_geometry(Scene& scene, GeometryList& out)
 
 static Op* Build(Node* node) { return new ABCReadGeo(node); }
 const Op::Description ABCReadGeo::description(nodeClass, Build);
-
-
