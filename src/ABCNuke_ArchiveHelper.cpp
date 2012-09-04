@@ -239,10 +239,19 @@ void getABCTimeSpan(IArchive archive, chrono_t& first, chrono_t& last)
 		return;
 
 	IObject archiveTop = archive.getTop();
+    if ( archiveTop.getProperties().getPropertyHeader( ".childBnds" ) != NULL ) { // Try to get timing from childBounds first
+
+        IBox3dProperty childbnds = Alembic::Abc::IBox3dProperty( archive.getTop().getProperties(),
+                                   ".childBnds", ErrorHandler::kQuietNoopPolicy); 
+    	TimeSamplingPtr ts = childbnds.getTimeSampling();
+		first = std::min(first, ts->getSampleTime(0) );
+		last = std::max(last, ts->getSampleTime(childbnds.getNumSamples()-1) );
+        return;
+    }
 
 	unsigned int numChildren = archiveTop.getNumChildren();
 
-	for (unsigned i=0; i<numChildren; ++i)
+	for (unsigned i=0; i<numChildren; ++i)  // Visit every object to get its first and last sample
 	{
 		IObject obj( archiveTop.getChild( i ));
 		getObjectTimeSpan(obj, first, last, true);
