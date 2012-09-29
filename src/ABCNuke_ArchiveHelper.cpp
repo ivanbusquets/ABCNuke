@@ -150,7 +150,12 @@ void getXformTimeSpan(IXform iXf, chrono_t& first, chrono_t& last, bool inherits
 	IXformSchema xf = iXf.getSchema();
 	TimeSamplingPtr ts = xf.getTimeSampling();
 	first = std::min(first, ts->getSampleTime(0) );
-	last = std::max(last, ts->getSampleTime(xf.getNumSamples()-1) );
+	if (xf.isConstant()) {
+		last = first;
+	}
+	else {
+		last = std::max(last, ts->getSampleTime(xf.getNumSamples()-1) );
+	}
 	if (inherits && xf.getInheritsXforms()) {
 		IObject parent = iXf.getParent();
 
@@ -174,7 +179,12 @@ void getCameraTimeSpan(ICamera iCam, chrono_t& first, chrono_t& last) {
 	ICameraSchema cam = iCam.getSchema();
 	TimeSamplingPtr ts = cam.getTimeSampling();
 	first = std::min(first, ts->getSampleTime(0) );
-	last = std::max(last, ts->getSampleTime(cam.getNumSamples()-1) );
+	if (cam.isConstant()) {
+		last = first;
+	}
+	else {
+		last = std::max(last, ts->getSampleTime(cam.getNumSamples()-1) );
+	}
 }
 
 //-*****************************************************************************
@@ -184,7 +194,12 @@ void getPolyMeshTimeSpan(IPolyMesh iPoly, chrono_t& first, chrono_t& last) {
 	IPolyMeshSchema mesh = iPoly.getSchema();
 	TimeSamplingPtr ts = mesh.getTimeSampling();
 	first = std::min(first, ts->getSampleTime(0) );
-	last = std::max(last, ts->getSampleTime(mesh.getNumSamples()-1) );
+	if (mesh.isConstant()) {
+		last = first;
+	}
+	else {
+		last = std::max(last, ts->getSampleTime(mesh.getNumSamples()-1) );
+	}
 }
 
 //-*****************************************************************************
@@ -194,9 +209,13 @@ void getSubDTimeSpan(ISubD iSub, chrono_t& first, chrono_t& last) {
 	ISubDSchema mesh = iSub.getSchema();
 	TimeSamplingPtr ts = mesh.getTimeSampling();
 	first = std::min(first, ts->getSampleTime(0) );
-	last = std::max(last, ts->getSampleTime(mesh.getNumSamples()-1) );
+	if (mesh.isConstant()) {
+		last = first;
+	}
+	else {
+		last = std::max(last, ts->getSampleTime(mesh.getNumSamples()-1) );
+	}
 }
-
 //-*****************************************************************************
 
 void getObjectTimeSpan(IObject obj, chrono_t& first, chrono_t& last, bool doChildren)
